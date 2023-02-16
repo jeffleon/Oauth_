@@ -18,7 +18,7 @@ create yours or change the name for use this one
 ```shell
     make up_dbs
 ```
-######if you use vscode check the lauch-sample.json to add in .vscode folder and run the API with out the API in docker last but not least, if you don't use vscode you need to build the project with the environment variables in the launch-sample.json
+###### if you use vscode check the lauch-sample.json to add in .vscode folder and run the API with out the API in docker last but not least, if you don't use vscode you need to build the project with the environment variables in the launch-sample.json
 ----
 ### Docs
 * See the documentation ones the API is up in the following URL
