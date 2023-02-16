@@ -1,6 +1,6 @@
 # Oauth_
 
-### Run the program
+### Run API
 
 Before you run the API need a .env file, check the .env-sample for the variables that you need and
 create yours or change the name for use this one
