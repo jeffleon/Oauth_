@@ -2,12 +2,14 @@
 
 ### Run the program
 
-* Run the APi with the commands below
+Before you run the API need a .env file, check the .env-sample for the variables that you need and
+create yours or change the name for use this one
+
+* Run the API with the commands below
 ```shell
     make up
 ```
-or
-### This one do a rebuild docker images
+* This one do a rebuild docker images
 ```shell
     make up_build
 ```
