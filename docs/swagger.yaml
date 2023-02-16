@@ -1,0 +1,229 @@
+basePath: /api/Oauth/v1
+definitions:
+  domain.PhoneStruct:
+    properties:
+      country_code:
+        type: string
+      number:
+        type: string
+    type: object
+  domain.SignIndto:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  domain.Tokendto:
+    properties:
+      id:
+        type: integer
+      refresh_token:
+        type: string
+      token:
+        type: string
+    type: object
+  domain.Userdto:
+    properties:
+      email:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: integer
+      last_name:
+        type: string
+      password:
+        type: string
+      phone:
+        $ref: '#/definitions/domain.PhoneStruct'
+      refresh_token:
+        type: string
+      token:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  title: Oauth API
+  version: "1.0"
+paths:
+  /user:
+    get:
+      consumes:
+      - application/json
+      description: Get User
+      parameters:
+      - description: access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+        x-example: token
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Userdto'
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error: {}
+                status:
+                  type: string
+              type: object
+      summary: Get User
+      tags:
+      - User
+  /user/logout:
+    post:
+      consumes:
+      - application/json
+      description: Logout
+      parameters:
+      - description: access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+        x-example: token
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error: {}
+                status:
+                  type: string
+              type: object
+      summary: Logout
+      tags:
+      - User
+  /user/refreshToken:
+    post:
+      consumes:
+      - application/json
+      description: User refresh token
+      parameters:
+      - description: access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+        x-example: token
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Tokendto'
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error: {}
+                status:
+                  type: string
+              type: object
+      summary: User refresh token
+      tags:
+      - User
+  /user/signin:
+    post:
+      consumes:
+      - application/json
+      description: User Signin
+      parameters:
+      - description: query params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.SignIndto'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Tokendto'
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error: {}
+                status:
+                  type: string
+              type: object
+        "422":
+          description: Unprocessable Entity
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error: {}
+                status:
+                  type: string
+              type: object
+      summary: User Signin
+      tags:
+      - User
+  /user/signup:
+    post:
+      consumes:
+      - application/json
+      description: User Signup
+      parameters:
+      - description: query params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Userdto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Userdto'
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error: {}
+                status:
+                  type: string
+              type: object
+        "422":
+          description: Unprocessable Entity
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error: {}
+                status:
+                  type: string
+              type: object
+      summary: User Signup
+      tags:
+      - User
+swagger: "2.0"

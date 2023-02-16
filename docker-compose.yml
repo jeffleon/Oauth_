@@ -1,0 +1,54 @@
+version: '3'
+
+services:
+  database:
+    image: postgres:latest
+    restart: always
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    ports:
+      - '5432:5432'
+  app:
+    build: 
+      dockerfile: dockerfile
+    environment:
+      PORT: 8080
+      APP_ENV: development
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOST: ${DB_HOST}
+      DB_NAME: ${DB_NAME}
+      DB_TIMEOUT: 1s
+      TOKEN_SECRET: ${TOKEN_SECRET}
+      TOKEN_SECRET_FP: ${TOKEN_SECRET_FP}
+      REDIS_TOKEN_BLACK_LIST_SET: ${REDIS_TOKEN_BLACK_LIST_SET}
+    env_file:
+      - .env
+    links:
+      - database:database
+    volumes:
+      - .:/app
+    ports:
+      - 8080:8080
+  redis:
+    container_name: redis
+    hostname: redis
+    image: redis
+    ports:
+      - "6379:6379"
+    links: [redis-commander]
+
+  redis-commander:
+    container_name: redis-commander
+    hostname: redis-commander
+    image: rediscommander/redis-commander:latest
+    build: .
+    restart: always
+    environment:
+        - REDIS_HOSTS=redis
+    ports:
+        - "8083:8081"
