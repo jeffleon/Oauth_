@@ -21,6 +21,11 @@ create yours or change the name for use this one
 __Note:__
 ###### if you use vscode check the lauch-sample.json to add in .vscode folder and run the API with out the API in docker last but not least, if you don't use vscode you need to build the project with the environment variables in the launch-sample.json
 ----
+### Email
+
+* check [Mail Microservice](https://github.com/jeffleon/Mail-Microservice) to run the rpc server to send welcome email in sign up method
+
+----
 ### Docs
 * See the documentation ones the API is up in the following URL
 

@@ -24,13 +24,19 @@ type userService struct {
 	userRepository  domain.UserDBRepository
 	tokenRepository domain.TokenRepository
 	redisRepository domain.RedisRepository
+	rpcRepository   domain.RPCRepository
 }
 
-func NewUserService(userRepository domain.UserDBRepository, tokenRepository domain.TokenRepository, redisRepository domain.RedisRepository) UserService {
+func NewUserService(userRepository domain.UserDBRepository,
+	tokenRepository domain.TokenRepository,
+	redisRepository domain.RedisRepository,
+	rpcRepository domain.RPCRepository,
+) UserService {
 	return &userService{
 		userRepository,
 		tokenRepository,
 		redisRepository,
+		rpcRepository,
 	}
 }
 
@@ -76,8 +82,14 @@ func (us *userService) SingUp(user *domain.Userdto) (*domain.Userdto, error) {
 	user.ID = response.ID
 	user.RefreshToken = *refreshToken
 	user.Token = *token
+
+	payload := domain.NewRPCPayloadEmailWelcome(user.Email)
+
+	res, err := us.rpcRepository.SendEmail(payload)
 	if err != nil {
-		return nil, err
+		logrus.Errorf("Error sent email %s", err)
+	} else {
+		logrus.Infof("Email OK, %s", res)
 	}
 
 	return user, nil

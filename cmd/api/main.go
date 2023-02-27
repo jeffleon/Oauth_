@@ -9,6 +9,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"net/rpc"
 
 	"github.com/jeffleon/oauth-microservice/internal/config"
 	"github.com/jeffleon/oauth-microservice/pkg/health"
@@ -30,6 +31,10 @@ func main() {
 		logrus.Fatalf("Error, Database cannot connect %s", err)
 	}
 	client := InitRedis()
+	clientRPC, err := rpc.Dial("tcp", fmt.Sprintf("%s:%s", config.Config.RPCHost, config.Config.RPCPort))
+	if err != nil {
+		logrus.Fatalf("Error, cannot connect with rpc server %s", err)
+	}
 	tokenObj := oauthDomain.TokenObj{
 		Predetermined: oauthDomain.TokenType{
 			Secret:     config.Config.TokenSecret,
@@ -40,10 +45,11 @@ func main() {
 			Expiration: config.Config.TokenRefreshExp,
 		},
 	}
-	redisRespo := oauthInfra.NewRedisRepository(ctx, client)
+	rpcRepo := oauthInfra.NewRPCRepository(clientRPC)
+	redisRepo := oauthInfra.NewRedisRepository(ctx, client)
 	userRepo := oauthInfra.NewUserRepository(db)
 	tokenRepo := oauthInfra.NewTokenRepository(tokenObj)
-	userService := oauthService.NewUserService(userRepo, tokenRepo, redisRespo)
+	userService := oauthService.NewUserService(userRepo, tokenRepo, redisRepo, rpcRepo)
 	userHandler := oauthInfra.UserHandler{Service: userService}
 	userRoutes := oauthInfra.NewRoutes(userHandler)
 	healthRoutes := health.NewHealthCheckRoutes()

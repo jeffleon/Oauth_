@@ -44,6 +44,7 @@ func (h *UserHandler) SignUp(ctx *gin.Context) {
 		})
 		return
 	}
+
 	ctx.JSON(http.StatusOK, domain.StandardResponse{
 		Status:   "success",
 		DataType: "object",
