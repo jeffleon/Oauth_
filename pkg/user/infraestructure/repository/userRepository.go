@@ -1,4 +1,4 @@
-package infraestructure
+package repository
 
 import (
 	"github.com/jeffleon/oauth-microservice/pkg/user/domain"

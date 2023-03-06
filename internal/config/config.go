@@ -41,6 +41,8 @@ type config struct {
 	TokenBlackListSet string        `env:"REDIS_TOKEN_BLACK_LIST_SET"`
 	RPCHost           string        `env:"RPC_HOST" envDefault:"localhost"`
 	RPCPort           string        `env:"RPC_PORT" envDefault:"5001"`
+	RedisPort         int64         `env:"REDIS_PORT" envDefault:"6379"`
+	RedisHost         string        `env:"REDIS_HOST" envDefault:"localhost"`
 }
 
 func (b *config) DBConnectionString() string {

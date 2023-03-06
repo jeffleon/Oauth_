@@ -12,6 +12,7 @@ services:
       - POSTGRES_DB=${DB_NAME}
     ports:
       - '5432:5432'
+  
   app:
     build: 
       dockerfile: dockerfile
@@ -26,6 +27,8 @@ services:
       TOKEN_SECRET: ${TOKEN_SECRET}
       TOKEN_SECRET_FP: ${TOKEN_SECRET_FP}
       REDIS_TOKEN_BLACK_LIST_SET: ${REDIS_TOKEN_BLACK_LIST_SET}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
     env_file:
       - .env
     links:
@@ -34,6 +37,7 @@ services:
       - .:/app
     ports:
       - 8080:8080
+  
   redis:
     container_name: redis
     hostname: redis

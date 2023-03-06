@@ -6,6 +6,11 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
+const (
+	ConstRefreshTokenKey  = "refreshToken"
+	ConstPredeterminedKey = "predetermined"
+)
+
 type TokenObj struct {
 	Predetermined TokenType
 	RefreshToken  TokenType
@@ -25,7 +30,7 @@ type Claims struct {
 }
 
 type TokenRepository interface {
-	CreateToken(*User, string) (*string, error)
+	CreateToken(*User, string) (string, error)
 	VerifyToken(string, string) (*Claims, error)
 }
 

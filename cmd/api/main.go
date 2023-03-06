@@ -18,6 +18,7 @@ import (
 	oauthService "github.com/jeffleon/oauth-microservice/pkg/user/aplication"
 	oauthDomain "github.com/jeffleon/oauth-microservice/pkg/user/domain"
 	oauthInfra "github.com/jeffleon/oauth-microservice/pkg/user/infraestructure"
+	"github.com/jeffleon/oauth-microservice/pkg/user/infraestructure/repository"
 	"github.com/redis/go-redis/v9"
 	"github.com/sirupsen/logrus"
 	"gorm.io/driver/postgres"
@@ -33,7 +34,8 @@ func main() {
 	client := InitRedis()
 	clientRPC, err := rpc.Dial("tcp", fmt.Sprintf("%s:%s", config.Config.RPCHost, config.Config.RPCPort))
 	if err != nil {
-		logrus.Fatalf("Error, cannot connect with rpc server %s", err)
+		logrus.Infof("Error, cannot connect with rpc server %s", err)
+		logrus.Infof("You can't send Emails")
 	}
 	tokenObj := oauthDomain.TokenObj{
 		Predetermined: oauthDomain.TokenType{
@@ -45,10 +47,10 @@ func main() {
 			Expiration: config.Config.TokenRefreshExp,
 		},
 	}
-	rpcRepo := oauthInfra.NewRPCRepository(clientRPC)
-	redisRepo := oauthInfra.NewRedisRepository(ctx, client)
-	userRepo := oauthInfra.NewUserRepository(db)
-	tokenRepo := oauthInfra.NewTokenRepository(tokenObj)
+	rpcRepo := repository.NewRPCRepository(clientRPC)
+	redisRepo := repository.NewRedisRepository(ctx, client)
+	userRepo := repository.NewUserRepository(db)
+	tokenRepo := repository.NewTokenRepository(tokenObj)
 	userService := oauthService.NewUserService(userRepo, tokenRepo, redisRepo, rpcRepo)
 	userHandler := oauthInfra.UserHandler{Service: userService}
 	userRoutes := oauthInfra.NewRoutes(userHandler)
@@ -77,7 +79,7 @@ func InitDB() (*gorm.DB, error) {
 
 func InitRedis() *redis.Client {
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
+		Addr:     fmt.Sprintf("%s:%d", config.Config.RedisHost, config.Config.RedisPort),
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})

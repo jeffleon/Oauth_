@@ -55,12 +55,12 @@ func (us *userService) RefreshAccessToken(id int64) (*domain.Tokendto, error) {
 		return nil, err
 	}
 
-	token, err := us.tokenRepository.CreateToken(user, "predeterminated")
+	token, err := us.tokenRepository.CreateToken(user, domain.ConstPredeterminedKey)
 	if err != nil {
 		return nil, err
 	}
 
-	return &domain.Tokendto{Token: *token, ID: user.ID}, nil
+	return &domain.Tokendto{Token: token, ID: user.ID}, nil
 }
 
 func (us *userService) SingUp(user *domain.Userdto) (*domain.Userdto, error) {
@@ -70,24 +70,24 @@ func (us *userService) SingUp(user *domain.Userdto) (*domain.Userdto, error) {
 		return nil, err
 	}
 
-	token, err := us.tokenRepository.CreateToken(response, "predeterminated")
+	token, err := us.tokenRepository.CreateToken(response, domain.ConstPredeterminedKey)
 	if err != nil {
 		return nil, err
 	}
 
-	refreshToken, err := us.tokenRepository.CreateToken(response, "refreshToken")
+	refreshToken, err := us.tokenRepository.CreateToken(response, domain.ConstRefreshTokenKey)
 	if err != nil {
 		return nil, err
 	}
 	user.ID = response.ID
-	user.RefreshToken = *refreshToken
-	user.Token = *token
+	user.RefreshToken = refreshToken
+	user.Token = token
 
 	payload := domain.NewRPCPayloadEmailWelcome(user.Email)
 
 	res, err := us.rpcRepository.SendEmail(payload)
 	if err != nil {
-		logrus.Errorf("Error sent email %s", err)
+		logrus.Infof("Error sent email %s", err)
 	} else {
 		logrus.Infof("Email OK, %s", res)
 	}
@@ -123,12 +123,17 @@ func (us *userService) SignIn(user *domain.SignIndto) (*domain.Tokendto, error) 
 		return nil, err
 	}
 
-	token, err := us.tokenRepository.CreateToken(response, "predeterminated")
+	token, err := us.tokenRepository.CreateToken(response, domain.ConstPredeterminedKey)
 	if err != nil {
 		return nil, err
 	}
 
-	return &domain.Tokendto{ID: response.ID, Token: *token}, nil
+	refreshToken, err := us.tokenRepository.CreateToken(response, domain.ConstRefreshTokenKey)
+	if err != nil {
+		return nil, err
+	}
+
+	return &domain.Tokendto{ID: response.ID, Token: token, RefreshToken: refreshToken}, nil
 }
 
 func (us *userService) Logout(token string) error {
@@ -146,7 +151,7 @@ func (us *userService) VerifyBlackList(token string) bool {
 }
 
 func (us *userService) VerifyToken(token string) (*domain.Claims, bool) {
-	claims, err := us.tokenRepository.VerifyToken(token, "predetermined")
+	claims, err := us.tokenRepository.VerifyToken(token, domain.ConstPredeterminedKey)
 
 	return claims, err == nil
 }

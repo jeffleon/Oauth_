@@ -1,4 +1,4 @@
-package infraestructure
+package repository
 
 import (
 	"fmt"
@@ -21,16 +21,16 @@ func NewTokenRepository(tokenObj domain.TokenObj) domain.TokenRepository {
 
 func (t TokenRepository) ChooseSecretExp(tokenType string) ([]byte, time.Duration) {
 	switch tokenType {
-	case "predetermined":
+	case domain.ConstPredeterminedKey:
 		return []byte(t.tokenObj.GetPredeterminedSecret()), t.tokenObj.GetPredeterminedExpiration()
-	case "refreshToken":
+	case domain.ConstRefreshTokenKey:
 		return []byte(t.tokenObj.GetRefreshTokenSecret()), t.tokenObj.GetRefreshTokenExpiration()
 	default:
 		return []byte(t.tokenObj.GetPredeterminedSecret()), t.tokenObj.GetPredeterminedExpiration()
 	}
 }
 
-func (t TokenRepository) CreateToken(user *domain.User, tokenType string) (*string, error) {
+func (t TokenRepository) CreateToken(user *domain.User, tokenType string) (string, error) {
 	secretKey, expiration := t.ChooseSecretExp(tokenType)
 	claims := domain.Claims{
 		Email:      user.Email,
@@ -42,10 +42,10 @@ func (t TokenRepository) CreateToken(user *domain.User, tokenType string) (*stri
 	signedToken, err := token.SignedString(secretKey)
 	if err != nil {
 		logrus.Errorf("Create token Error: %s", err.Error())
-		return nil, err
+		return "", err
 	}
 	logrus.Infof("Token created")
-	return &signedToken, nil
+	return signedToken, nil
 }
 
 func (t TokenRepository) VerifyToken(receivedToken string, tokenType string) (*domain.Claims, error) {
