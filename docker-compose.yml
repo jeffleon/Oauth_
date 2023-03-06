@@ -15,7 +15,7 @@ services:
   
   app:
     build: 
-      dockerfile: dockerfile
+      dockerfile: Dockerfile.localdev
     environment:
       PORT: 8080
       APP_ENV: development
