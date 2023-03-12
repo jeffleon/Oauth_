@@ -3,14 +3,14 @@ package domain
 import "strings"
 
 type Userdto struct {
-	ID           int64       `json:"id,omitempty"`
-	FirstName    string      `json:"first_name"`
-	LastName     string      `json:"last_name"`
-	Email        string      `json:"email"`
-	Password     string      `json:"password,omitempty"`
-	Phone        PhoneStruct `json:"phone"`
-	Token        string      `json:"token,omitempty"`
-	RefreshToken string      `json:"refresh_token,omitempty"`
+	ID           int64       `json:"id,omitempty" structs:"id"`
+	FirstName    string      `json:"first_name" structs:"first_name"`
+	LastName     string      `json:"last_name" structs:"last_name"`
+	Email        string      `json:"email" structs:"email"`
+	Password     string      `json:"password,omitempty" structs:"-"`
+	Phone        PhoneStruct `json:"phone" structs:"phone"`
+	Token        string      `json:"token,omitempty" structs:"-"`
+	RefreshToken string      `json:"refresh_token,omitempty" structs:"-"`
 }
 
 func (u Userdto) UserDto2Domain() *User {

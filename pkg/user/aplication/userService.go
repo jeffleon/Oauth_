@@ -3,6 +3,7 @@ package aplication
 import (
 	"time"
 
+	"github.com/fatih/structs"
 	"github.com/jeffleon/oauth-microservice/internal/config"
 	"github.com/jeffleon/oauth-microservice/pkg/user/domain"
 	"github.com/sirupsen/logrus"
@@ -25,18 +26,21 @@ type userService struct {
 	tokenRepository domain.TokenRepository
 	redisRepository domain.RedisRepository
 	rpcRepository   domain.RPCRepository
+	kafkaRepository domain.KafkaRepository
 }
 
 func NewUserService(userRepository domain.UserDBRepository,
 	tokenRepository domain.TokenRepository,
 	redisRepository domain.RedisRepository,
 	rpcRepository domain.RPCRepository,
+	kafkaRepository domain.KafkaRepository,
 ) UserService {
 	return &userService{
 		userRepository,
 		tokenRepository,
 		redisRepository,
 		rpcRepository,
+		kafkaRepository,
 	}
 }
 
@@ -83,6 +87,10 @@ func (us *userService) SingUp(user *domain.Userdto) (*domain.Userdto, error) {
 	user.RefreshToken = refreshToken
 	user.Token = token
 
+	err = us.kafkaRepository.ProduceMsg(config.Config.KafkaUserTopic, structs.Map(user))
+	if err != nil {
+		logrus.Errorf("Error sending kafka msg %s in topic %s", "", err)
+	}
 	payload := domain.NewRPCPayloadEmailWelcome(user.Email)
 
 	res, err := us.rpcRepository.SendEmail(payload)

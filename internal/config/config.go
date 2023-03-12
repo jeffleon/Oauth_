@@ -43,6 +43,11 @@ type config struct {
 	RPCPort           string        `env:"RPC_PORT" envDefault:"5001"`
 	RedisPort         int64         `env:"REDIS_PORT" envDefault:"6379"`
 	RedisHost         string        `env:"REDIS_HOST" envDefault:"localhost"`
+	KafkaHost         string        `env:"KAFKA_HOST" envDefault:"localhost"`
+	KafkaUsername     string        `env:"KAFKA_USERNAME"`
+	KafkaPassword     string        `env:"KAFKA_PASSWORD"`
+	KafkaUserTopic    string        `env:"KAFKA_USER_TOPIC"`
+	KafkaPort         string        `env:"KAFKA_PORT" envDefault:"9092"`
 }
 
 func (b *config) DBConnectionString() string {

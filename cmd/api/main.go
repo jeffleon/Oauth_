@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"net/rpc"
 
+	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
 	"github.com/jeffleon/oauth-microservice/internal/config"
 	"github.com/jeffleon/oauth-microservice/pkg/health"
 	"github.com/jeffleon/oauth-microservice/pkg/router"
@@ -37,6 +38,15 @@ func main() {
 		logrus.Infof("Error, cannot connect with rpc server %s", err)
 		logrus.Infof("You can't send Emails")
 	}
+
+	kafkaProducer, err := InitKafkaProducer()
+
+	if err != nil {
+		panic(err)
+	}
+	logrus.Info("Kafka connected")
+	defer kafkaProducer.Close()
+
 	tokenObj := oauthDomain.TokenObj{
 		Predetermined: oauthDomain.TokenType{
 			Secret:     config.Config.TokenSecret,
@@ -48,10 +58,11 @@ func main() {
 		},
 	}
 	rpcRepo := repository.NewRPCRepository(clientRPC)
+	kafkaRepo := repository.NewKafkaRepository(kafkaProducer)
 	redisRepo := repository.NewRedisRepository(ctx, client)
 	userRepo := repository.NewUserRepository(db)
 	tokenRepo := repository.NewTokenRepository(tokenObj)
-	userService := oauthService.NewUserService(userRepo, tokenRepo, redisRepo, rpcRepo)
+	userService := oauthService.NewUserService(userRepo, tokenRepo, redisRepo, rpcRepo, kafkaRepo)
 	userHandler := oauthInfra.UserHandler{Service: userService}
 	userRoutes := oauthInfra.NewRoutes(userHandler)
 	healthRoutes := health.NewHealthCheckRoutes()
@@ -75,6 +86,16 @@ func InitDB() (*gorm.DB, error) {
 		return nil, err
 	}
 	return db, nil
+}
+
+func InitKafkaProducer() (*kafka.Producer, error) {
+	return kafka.NewProducer(&kafka.ConfigMap{
+		"bootstrap.servers": fmt.Sprintf("%s:%s", config.Config.KafkaHost, config.Config.KafkaPort),
+		"security.protocol": "SASL_SSL",
+		"sasl.username":     config.Config.KafkaUsername,
+		"sasl.password":     config.Config.KafkaPassword,
+		"sasl.mechanism":    "PLAIN",
+	})
 }
 
 func InitRedis() *redis.Client {
