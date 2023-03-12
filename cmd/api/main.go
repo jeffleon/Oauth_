@@ -35,8 +35,11 @@ func main() {
 	client := InitRedis()
 	clientRPC, err := rpc.Dial("tcp", fmt.Sprintf("%s:%s", config.Config.RPCHost, config.Config.RPCPort))
 	if err != nil {
-		logrus.Infof("Error, cannot connect with rpc server %s", err)
-		logrus.Infof("You can't send Emails")
+		logrus.Errorf("Error, cannot connect with rpc server %s", err)
+		logrus.Errorf("You can't send Emails")
+	} else {
+		logrus.Info("RPC connected succefully")
+		logrus.Infof("You can send Emails")
 	}
 
 	kafkaProducer, err := InitKafkaProducer()
@@ -44,7 +47,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	logrus.Info("Kafka connected")
+	logrus.Info("Kafka connected succefully")
 	defer kafkaProducer.Close()
 
 	tokenObj := oauthDomain.TokenObj{
