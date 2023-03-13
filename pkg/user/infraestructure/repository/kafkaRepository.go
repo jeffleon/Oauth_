@@ -18,7 +18,7 @@ func NewKafkaRepository(producer *kafka.Producer) domain.KafkaRepository {
 	}
 }
 
-func (k *kafkaRepository) ProduceMsg(topic string, message map[string]interface{}) error {
+func (k *kafkaRepository) ProduceMsg(topic, key string, message map[string]interface{}) error {
 
 	go func(topic string, message map[string]interface{}) {
 		byteMsg, err := json.Marshal(message)
@@ -28,6 +28,7 @@ func (k *kafkaRepository) ProduceMsg(topic string, message map[string]interface{
 
 		err = k.producer.Produce(&kafka.Message{
 			TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
+			Key:            []byte(key),
 			Value:          byteMsg,
 		}, nil)
 

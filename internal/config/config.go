@@ -17,7 +17,7 @@ func init() {
 }
 
 const (
-	EmailWelcomeSubject = "Welcome Email"
+	EmailWelcomeSubject = "Welcome from RPC Email"
 	EmailWelcomeMsg     = "Welcome to the jungle"
 )
 

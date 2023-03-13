@@ -87,7 +87,7 @@ func (us *userService) SingUp(user *domain.Userdto) (*domain.Userdto, error) {
 	user.RefreshToken = refreshToken
 	user.Token = token
 
-	err = us.kafkaRepository.ProduceMsg(config.Config.KafkaUserTopic, structs.Map(user))
+	err = us.kafkaRepository.ProduceMsg(config.Config.KafkaUserTopic, "created_user", structs.Map(user))
 	if err != nil {
 		logrus.Errorf("Error sending kafka msg %s in topic %s", "", err)
 	}
