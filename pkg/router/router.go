@@ -13,11 +13,13 @@ type Router interface {
 
 func NewRouter(routes RoutesGroup) Router {
 	route := gin.Default()
+	health := route.Group("api/OAuth/v1")
+	group := route.Group("/")
 	public := route.Group("api/OAuth/v1/public")
 	secure := route.Group("api/OAuth/v1/secure")
 	routes.User.PublicRoutes(public)
 	routes.User.SecureRoutes(secure)
-	routes.Health.RegisterRoutes(public)
+	routes.Health.RegisterRoutes(health, group)
 	routes.Swagger.RegisterRoutes(public)
 	return route
 }

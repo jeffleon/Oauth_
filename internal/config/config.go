@@ -43,10 +43,12 @@ type config struct {
 	RPCPort           string        `env:"RPC_PORT" envDefault:"5001"`
 	RedisPort         int64         `env:"REDIS_PORT" envDefault:"6379"`
 	RedisHost         string        `env:"REDIS_HOST" envDefault:"localhost"`
+	RedisUsername     string        `env:"REDIS_USERNAME"`
+	RedisPassword     string        `env:"REDIS_PASSWORD"`
 	KafkaHost         string        `env:"KAFKA_HOST" envDefault:"localhost"`
 	KafkaUsername     string        `env:"KAFKA_USERNAME"`
 	KafkaPassword     string        `env:"KAFKA_PASSWORD"`
-	KafkaUserTopic    string        `env:"KAFKA_USER_TOPIC"`
+	KafkaUserTopic    string        `env:"KAFKA_USER_TOPIC" envDefault:"default"`
 	KafkaPort         string        `env:"KAFKA_PORT" envDefault:"9092"`
 }
 

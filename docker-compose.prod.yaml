@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  app:
+    build: 
+      dockerfile: Dockerfile
+      context: .
+    image: jeffleon/oauth:0.0.8
+    environment:
+      PORT: 8080
+      APP_ENV: production
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOST: ${DB_HOST}
+      DB_NAME: ${DB_NAME}
+      DB_TIMEOUT: 1s
+      TOKEN_SECRET: ${TOKEN_SECRET}
+      TOKEN_SECRET_FP: ${TOKEN_SECRET_FP}
+      REDIS_TOKEN_BLACK_LIST_SET: ${REDIS_TOKEN_BLACK_LIST_SET}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_USERNAME: ${REDIS_USERNAME}
+      KAFKA_HOST: ${KAFKA_HOST}
+      KAFKA_USERNAME: ${KAFKA_USERNAME}
+      KAFKA_PASSWORD: ${KAFKA_PASSWORD}
+      KAFKA_USER_TOPIC: ${KAFKA_USER_TOPIC}
+      KAFKA_PORT: ${KAFKA_PORT}
+    volumes:
+      - .:/app
+    ports:
+      - 8080:8080

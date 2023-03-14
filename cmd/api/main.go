@@ -104,9 +104,9 @@ func InitKafkaProducer() (*kafka.Producer, error) {
 func InitRedis() *redis.Client {
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     fmt.Sprintf("%s:%d", config.Config.RedisHost, config.Config.RedisPort),
-		Password: "", // no password set
-		DB:       0,  // use default DB
+		Password: config.Config.RedisPassword, // no password set
+		DB:       0,                           // use default DB
+		Username: config.Config.RedisUsername,
 	})
-
 	return rdb
 }

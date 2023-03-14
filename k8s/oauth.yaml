@@ -1,0 +1,121 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oauth
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oauth
+  template:
+    metadata:
+      labels:
+        app: oauth
+    spec:
+      containers:
+      - name: oauth
+        image: "gcr.io/kafka-kubernetes-380403/oauth:latest"
+        env:
+          - name: APP_ENV
+            value: production
+          - name: DB_HOST
+            valueFrom:
+              secretKeyRef:
+                name: db-secrets
+                key: DB_HOST 
+          - name: DB_NAME
+            valueFrom:
+              secretKeyRef:
+                name: db-secrets
+                key: DB_NAME
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: db-secrets
+                key: DB_PASSWORD
+          - name: DB_TIMEOUT
+            value: 1s
+          - name: DB_USER
+            valueFrom:
+              secretKeyRef:
+                name: db-secrets
+                key: DB_USER
+          - name: KAFKA_HOST
+            valueFrom:
+              secretKeyRef:
+                name: kafka-secrets
+                key: KAFKA_HOST 
+          - name: KAFKA_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: kafka-secrets
+                key: KAFKA_PASSWORD 
+          - name: KAFKA_PORT
+            valueFrom:
+              secretKeyRef:
+                name: kafka-secrets
+                key: KAFKA_PORT
+          - name: KAFKA_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: kafka-secrets
+                key: KAFKA_USERNAME
+          - name: KAFKA_USER_TOPIC
+            valueFrom:
+              secretKeyRef:
+                name: kafka-secrets
+                key: KAFKA_USER_TOPIC
+          - name: PORT
+            value: "8080"
+          - name: REDIS_HOST
+            valueFrom:
+              secretKeyRef:
+                name: redis-secrets
+                key: REDIS_HOST
+          - name: REDIS_PORT
+            valueFrom:
+              secretKeyRef:
+                name: redis-secrets
+                key: REDIS_PORT
+          - name: REDIS_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: redis-secrets
+                key: REDIS_USERNAME
+          - name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: redis-secrets
+                key: REDIS_PASSWORD
+          - name: REDIS_TOKEN_BLACK_LIST_SET
+            valueFrom:
+              secretKeyRef:
+                name: redis-secrets
+                key: REDIS_TOKEN_BLACK_LIST_SET
+          - name: TOKEN_SECRET
+            value: secret
+          - name: TOKEN_SECRET_FP
+            value: secretFP
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+          - containerPort: 8080
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: oauth
+spec:
+  selector:
+    name: oauth
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
