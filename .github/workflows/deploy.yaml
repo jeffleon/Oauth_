@@ -32,6 +32,14 @@ jobs:
             cluster_name: ${{ env.GKE_CLUSTER }}
             location: ${{ env.GKE_ZONE }}
             credentials: ${{ secrets.GKE_SA_KEY }}
+
+        - name: Build
+          run: |-
+            docker build -t $IMAGE .
+
+        - name: tag
+          run: |-
+            docker tag $IMAGE gcr.io/kafka-kubernetes-380403/$IMAGE:$GITHUB_SHA
         
         - name: Publish
           run: |-
