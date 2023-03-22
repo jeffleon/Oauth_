@@ -5,7 +5,7 @@ on:
       - main
   pull_request:
 env:
-    PROJECT_ID: ${{ secrets.GKE_PROJECT }}
+    PROJECT_ID: kafka-kubernetes-380403
     GKE_CLUSTER: ${{ secrets.GKE_CLUSTER }}    # Add your cluster name here.
     GKE_ZONE: ${{ secrets.GKE_ZONE }}   # Add your cluster zone here.
     DEPLOYMENT_NAME: gke-Oauth # Add your deployment name here.
