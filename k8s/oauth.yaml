@@ -123,3 +123,44 @@ spec:
   selector:
     app: oauth
   type: LoadBalancer
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: db-secrets
+type: Opaque
+data:
+  DB_HOST: MTAuMTA4LjE0NC4z
+  DB_USER:  cG9zdGdyZXM=
+  DB_PASSWORD: YWJjMTIz
+  DB_NAME: T2F1dGg=
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: redis-secrets
+type: Opaque
+data:
+  REDIS_HOST: cmVkaXMtMTIwMTEuYzgzLnVzLWVhc3QtMS0yLmVjMi5jbG91ZC5yZWRpc2xhYnMuY29t
+  REDIS_PORT: MTIwMTE=
+  REDIS_TOKEN_BLACK_LIST_SET: VE9LRU5fQkxBQ0tfTElTVA==
+  REDIS_PASSWORD: QWJjMTIzKys=
+  REDIS_USERNAME: dXNlcjEyMw==
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: kafka-secrets
+type: Opaque
+data:
+  KAFKA_HOST: cGtjLWxnazB2LnVzLXdlc3QxLmdjcC5jb25mbHVlbnQuY2xvdWQ=
+  KAFKA_PORT: OTA5Mg==
+  KAFKA_USER_TOPIC: ZGVmYXVsdA==
+  KAFKA_PASSWORD: Rzg5c3o4eVJPWVNwQUFaOTNLYTJ1SWNwcVQwM1JyWVhWc3UvUmRTdU1NdVAyR2llYldrbkozZEEySjI4dk5aKw==
+  KAFKA_USERNAME: T1NSVENQVENEWFJUVFJPRg==

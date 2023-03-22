@@ -8,11 +8,12 @@ spec:
   rules:
   - http:
       paths: 
-      - path: /api/OAuth/v1
+      - path: /api/OAuth/v1/*
         pathType: ImplementationSpecific
         backend:
           service:
             name: oauth
             port:
               number: 8080
+
      
